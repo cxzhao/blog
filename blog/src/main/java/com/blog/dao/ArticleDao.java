@@ -19,6 +19,7 @@ import redis.clients.util.JedisByteHashMap;
 
 @Component
 public class ArticleDao {
+	
 	/**
 	 * 新增加一篇文章
 	 * @param article
