@@ -229,6 +229,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			</nav>
 		</div>
 
-		<script src="../js/script.js"></script>
+		<script src="client/js/script.js"></script>
 </body>
 </html>
