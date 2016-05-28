@@ -184,7 +184,6 @@ figure {
 	max-width: 0;
 	border-bottom: 1px solid #000;
 	color: #000;
-	content: attr(data-hover);
 	-webkit-transition: max-width 0.5s;
 	-moz-transition: max-width 0.5s;
 	transition: max-width 0.5s;
@@ -209,7 +208,7 @@ figure {
 }
 
 .entry-title {
-	text-align: center;
+	text-align: left;
 	font-size: 1.9em;
 	margin-bottom: 20px;
 	line-height: 1.6;

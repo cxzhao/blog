@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.blog.domain.Article;
+import com.blog.utils.StringUtils;
+import com.blog.bean.Page;
 import com.blog.dao.ArticleDao;
 
 /**
@@ -37,8 +39,10 @@ public class ArticleService {
 		article.setTitle(title);
 		article.setType(type);
 		article.setContent(content);
-		if(newtag!=null){
+		if(newtag!=null&&!StringUtils.isEmptyOrBlank(tag)){
 			tag=","+newtag;
+		}else{
+			tag=newtag;
 		}
 		String [] tagArray = tag.split("\\,");
 		Set<String> tagSet = new HashSet<String>();
@@ -52,6 +56,15 @@ public class ArticleService {
 		return articleDao.add(article);	
 	}
 	
-
+	public Page<Article> queryArticle(int pageNumber,int pageSize){
+		return articleDao.queryArticleAllField(pageNumber, pageSize);
+	}
 	
+	public Article queryArticleById(int id,boolean isAddRecentList,boolean isUpdateRank){
+		return articleDao.queryById(id, isAddRecentList, isUpdateRank);
+	}
+	
+	public Page<Article> queryArticleByType(String type,int pageNumber,int pageSize){	
+		return articleDao.queryByType(type, pageNumber, pageSize);
+	}
 }

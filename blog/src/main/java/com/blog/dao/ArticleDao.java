@@ -10,10 +10,13 @@ import org.springframework.stereotype.Component;
 import com.blog.bean.Page;
 import com.blog.domain.Article;
 import com.blog.redis.PipeCallback;
+import com.blog.redis.RedisCallback;
 import com.blog.redis.RedisKit;
 import com.blog.utils.BuilderUtils;
 import com.blog.utils.RedisKey;
 import com.blog.utils.SerializeUtils;
+
+import redis.clients.jedis.Jedis;
 import redis.clients.jedis.Pipeline;
 import redis.clients.util.JedisByteHashMap;
 
@@ -120,7 +123,7 @@ public class ArticleDao {
 				//添加文章到最近阅读
 				if(isAddRecentList){
 					pipe.lpush(SerializeUtils.serialize(RedisKey.RECENT_ARTICLE_LIST), SerializeUtils.serialize(id));
-				}
+				}				
 				//文章点击量加１
 				if(isUpdateRank){
 					pipe.zincrby(SerializeUtils.serialize(RedisKey.RANK_ARTICLE_SET), 1, SerializeUtils.serialize(id));
@@ -131,4 +134,40 @@ public class ArticleDao {
 		return  article;	
 	}
 	
+	public Page<Article> queryByType(String typeName, int pageNumber,int pageSize){
+		int start = (pageNumber-1)*pageSize;
+		int end = start+pageSize;
+		
+		RedisKit kit = new RedisKit();
+		List<byte[]> ids=kit.redisOperator(new RedisCallback() {			
+			@Override
+			public Object execute(Jedis jedis) {			
+				return jedis.lrange(SerializeUtils.serialize(typeName), start, end);
+			}
+		});
+		
+		List<Object> list=kit.pipelining(new PipeCallback() {
+			
+			@Override
+			public void execute(Pipeline pipe) {
+				for(int i=0;i<ids.size();i++){
+					long id = (long) SerializeUtils.deserialize(ids.get(i));
+					pipe.hgetAll(SerializeUtils.serialize(RedisKey.ARTICLE + id));
+				}
+			}
+		});
+		
+		List<Article> articleList = new ArrayList<Article>();
+		for(Object obj:list){
+			JedisByteHashMap map = (JedisByteHashMap) obj;
+			Article article = BuilderUtils.builderArticle(map);
+			articleList.add(article);
+		}
+		
+		Page<Article> page = new Page<Article>();
+		page.setPageNumber(pageNumber);
+		page.setPageSize(pageSize);
+		page.setList(articleList);
+		return page;		
+	}
 }

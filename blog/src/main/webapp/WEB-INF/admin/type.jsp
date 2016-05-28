@@ -1,6 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
    <%  
 String path = request.getContextPath();  
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";  
@@ -237,7 +236,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
         <!-- Optionally, you can add icons to the links -->
         <li class="active"><a href="admin"><i class="fa fa-link"></i> <span>编辑新文章</span></a></li>
         <li><a href="#"><i class="fa fa-link"></i> <span>我的文章</span></a></li>
-        <li><a href="type/type"><i class="fa fa-link"></i> <span>类型管理</span></a></li>
+         <li><a href="type/type"><i class="fa fa-link"></i> <span>类型管理</span></a></li>
         <li class="treeview">
           <a href="#"><i class="fa fa-link"></i> <span>网站管理</span> <i class="fa fa-angle-left pull-right"></i></a>
           <ul class="treeview-menu">
@@ -259,7 +258,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
         <div class="col-md-12">
           <div class="box box-info">
             <div class="box-header">
-              <h3 class="box-title">新文章
+              <h3 class="box-title">新增类型
               </h3>
               <!-- tools box -->
               <div class="pull-right box-tools">
@@ -274,45 +273,18 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
             <div class="box-body pad">
               <form>
 		　<div class="form-group">
-                  <label>文章标题：</label>
-                  <input type="text" name="title" class="form-control" placeholder="文章标题" id="article-title">
-                </div>
-		<div class="form-group">
-                  <label>文章类别</label>
-                  <select name="type"  id="select-type" class="form-control">
-                  </select>
-                </div>
-
-		<div class="form-group">
-                  <label>文章标签：</label>
-                  <input type="text" name="tag" class="form-control" placeholder="java,spring,redis,...." id="article-new-tag">
-                </div>
-		         <div class="form-group">
-                  <div class="checkbox">
-                  <c:forEach var="tag"  items="${tagList }" >
-                  	 <label>
-                      <input name="tag" type="checkbox"  name="tag" value="${tag.tag} ">
-                      ${tag.tag} 
-                    </label>    
-                  </c:forEach>
-                              
-                  </div>
-
-                    <textarea id="contenttextarea" name="content" rows="10" cols="80">
-                       
-                    </textarea>
-                    
+                  <label>新类型：</label>
+                  <input type="text" name="type"  id="blog-type" class="form-control" placeholder="JAVA">
+                </div>              
                <div class="box-footer">
-                <button type="button" class="btn btn-default">保存</button>
-                <button type="button" class="btn btn-info pull-right" onclick="addArticle()">发布</button>
+                <button type="button" class="btn btn-info pull-right" onclick="addType()">添加</button>
               </div>
+              
               
               </form>
             </div>
           </div>
-          <!-- /.box -->
-
-          
+          <!-- /.box --> 
         </div>
         <!-- /.col-->
       </div>
@@ -432,63 +404,24 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <script src="https://cdn.ckeditor.com/4.4.3/standard/ckeditor.js"></script>
 <!-- Bootstrap WYSIHTML5 -->
 <script src="admin/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js"></script>
-<script>
-
-  $(function () {
-
-   var contentEditor= CKEDITOR.replace('contenttextarea');
-    //bootstrap WYSIHTML5 - text editor
-    $(".textarea").wysihtml5();
-    
-    $.ajax({  
-        type : "GET",  
-        url : "type/queryType",//路径 
-        dataType:"json",
-        success : function(result) {
-        	if(result.returnCode==1){
-        		var array = result.data;
-        		for(var i=0;i<array.length;i++){
-        			$("#select-type").append("<option value='"+array[i].type+"'>"+array[i].type+"</option>");
-        		}
-        	}
-        }  
-    }); 
-    
-  });
-  
-  function getCheckBoxTag(){
-	 
-	  var id_array=new Array();  
-	  $('input[name="tag"]:checked').each(function(){  
-	      id_array.push($(this).val());//向数组中添加元素  
-	  });  
-	  var idstr=id_array.join(',');//将数组元素连接起来以构建一个字符串  
-	  return idstr;
-  }
-  
-  function addArticle(){
-  
+<script>  
+  function addType(){
 	  $.ajax({  
-          type : "POST",  
-          url : "article/newArticle",//路径 
+          type : "POST", 
+          url : "type/add",//路径 
           dataType:"json",
           data : {  
-              title:$("#article-title").val(),
-              type:$("#select-type").val() ,
-              newtag:$("#article-new-tag").val(),
-              content:CKEDITOR.instances.contenttextarea.getData(), 
-              tag:getCheckBoxTag()
+              type:$("#blog-type").val()
           },
           success : function(result) {
               if ( result.returnCode==1) {  
-                 alert("文章添加成功");
+                 alert("类型添加成功");
               } else {  
-            	  alert("文章添加失败");
+            	  alert("类型添加失败");
               }  
           }  
-      });  
+      }); 
   }
-  
   
 </script>
 </body>

@@ -35,4 +35,8 @@ public class TestController {
 		return "/client/index";
 	}
 	
+	@RequestMapping(method = RequestMethod.GET, value = "index_2")
+	public String index_2() {
+		return "/client/index";
+	}
 }

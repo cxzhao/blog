@@ -22,7 +22,6 @@ public class TypeDao {
 			
 			@Override
 			public Object execute(Jedis jedis) {
-				// TODO Auto-generated method stub
 				return jedis.sadd(SerializeUtils.serialize(RedisKey.BLOG_TYPE), SerializeUtils.serialize(type));
 			}
 		});

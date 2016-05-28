@@ -8,6 +8,12 @@ public class ArticleType {
 	
 	private String type;
 
+	public ArticleType(){}
+	
+	public ArticleType(String type){
+		setType(type);
+	}
+	
 	public String getType() {
 		return type;
 	}
